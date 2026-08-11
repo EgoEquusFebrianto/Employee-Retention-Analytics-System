@@ -1,0 +1,44 @@
+{
+    "target": "Attrition",
+    "target_mapping": {
+        "No": 0,
+        "Yes": 1
+    },
+    "features": [
+        "Age",
+        "DailyRate",
+        "HourlyRate",
+        "MonthlyRate",
+        "BusinessTravel",
+        "Department",
+        "DistanceFromHome",
+        "Education",
+        "EducationField",
+        "EnvironmentSatisfaction",
+        "JobInvolvement",
+        "JobLevel",
+        "JobRole",
+        "JobSatisfaction",
+        "MonthlyIncome",
+        "NumCompaniesWorked",
+        "OverTime",
+        "PercentSalaryHike",
+        "PerformanceRating",
+        "RelationshipSatisfaction",
+        "StockOptionLevel",
+        "TotalWorkingYears",
+        "TrainingTimesLastYear",
+        "WorkLifeBalance",
+        "YearsAtCompany",
+        "YearsInCurrentRole",
+        "YearsSinceLastPromotion",
+        "YearsWithCurrManager"
+    ],
+    "number_of_features": 28,
+    "models": [
+        "logistic_regression",
+        "random_forest",
+        "xgboost"
+    ],
+    "random_state": 42
+}
