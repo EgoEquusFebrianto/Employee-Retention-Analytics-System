@@ -1,0 +1,9 @@
+# Python 3.11 required
+Flask
+Flask-SQLAlchemy
+sqlalchemy
+psycopg2-binary
+python-dotenv
+pandas
+scikit-learn
+xgboost
