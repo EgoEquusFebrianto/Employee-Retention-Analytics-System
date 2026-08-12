@@ -5,5 +5,5 @@ sqlalchemy
 psycopg2-binary
 python-dotenv
 pandas
-scikit-learn
+scikit-learn == 1.6.1
 xgboost

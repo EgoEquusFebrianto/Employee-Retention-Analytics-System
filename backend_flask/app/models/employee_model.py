@@ -1,13 +1,15 @@
 from sqlalchemy import Integer, String
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app import db
+from app.models.prediction_model import EmployeePrediction
+
 
 class Employee(db.Model):
     __tablename__ = "employee"
 
     age: Mapped[int | None] = mapped_column(Integer)
-    attrition: Mapped[str | None] = mapped_column(String(10))
+    # attrition: Mapped[str | None] = mapped_column(String(10))
 
     business_travel: Mapped[str | None] = mapped_column(String(50))
     daily_rate: Mapped[int | None] = mapped_column(Integer)
@@ -36,7 +38,7 @@ class Employee(db.Model):
     num_companies_worked: Mapped[int | None] = mapped_column(Integer)
 
     over18: Mapped[str | None] = mapped_column(String(10))
-    overtime: Mapped[str | None] = mapped_column(String(10))
+    over_time: Mapped[str | None] = mapped_column(String(10))
 
     percent_salary_hike: Mapped[int | None] = mapped_column(Integer)
     performance_rating: Mapped[int | None] = mapped_column(Integer)
@@ -52,3 +54,9 @@ class Employee(db.Model):
     years_in_current_role: Mapped[int | None] = mapped_column(Integer)
     years_since_last_promotion: Mapped[int | None] = mapped_column(Integer)
     years_with_curr_manager: Mapped[int | None] = mapped_column(Integer)
+
+    predictions: Mapped[list["EmployeePrediction"]] = relationship(
+        "EmployeePrediction",
+        back_populates="employee",
+        cascade="all, delete-orphan"
+    )

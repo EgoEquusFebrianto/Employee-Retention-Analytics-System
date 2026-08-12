@@ -18,10 +18,4 @@ def create_app():
 
     db.init_app(app)
 
-    # Memperkenalkan Model Employee ke SQLAlchemy
-    with app.app_context():
-        from app.models.employee_model import Employee
-
-        db.create_all()
-
     return app
