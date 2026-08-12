@@ -1,10 +1,14 @@
+from collections import defaultdict
 from typing import Any
 
 import pandas as pd
 import joblib
 from sklearn.pipeline import Pipeline
+from pathlib import Path
 
+from app.dto.response.prediction_response import PredictionResponse, PredictTask
 from app.models.employee_model import Employee
+from app.models.prediction_model import EmployeePrediction
 
 class PredictionService:
     FEATURES: list[str] = [
@@ -56,6 +60,7 @@ class PredictionService:
             cls,
             employees: list[Employee]
     ):
+
         return pd.DataFrame([
             {
                 feature: getattr(employee, feature)
@@ -70,30 +75,64 @@ class PredictionService:
         elif probability >= 0.40: return "MEDIUM"
         return "Low"
 
-    def predict_batch(self, employees: list[Employee]) -> list[dict[str, Any]]:
+    def _predict_model(
+            self,
+            model_name: str,
+            employees: list[Employee]
+    ) -> list[EmployeePrediction]:
         if not employees: return []
 
-        dataframe = self.employee_to_dataframe(employees)
+        model: Pipeline = self.models[model_name]
+        df = self.employee_to_dataframe(employees)
 
-        result: list[dict[str, Any]] = []
+        predictions =  model.predict(df)
+        probabilities = model.predict_proba(df)
 
-        for model_name, model in self.models.items():
-            predictions = model.predict(dataframe)
-            probabilities = model.predict_proba(dataframe)
+        yes_index: int = list(model.classes_).index(1)
 
-            yes_index: int = list(model.classes_).index(1)
+        results: list[PredictionResponse] = []
 
-            for index, employee in enumerate(employees):
-                prediction: str = str(predictions[index])
-                probability: float = float(probabilities[index][yes_index])
-                risk_level: str = self.determine_risk_level(probability)
+        for index, employee in enumerate(employees):
+            prediction_value: int = int(predictions[index])
+            probability: float = float(probabilities[index][yes_index])
+            prediction: str = "Yes" if prediction_value == 1 else "No"
+            risk_level: str = self.determine_risk_level(probability)
 
-                result.append({
-                    "employee_number": employee.employee_number,
-                    "model": model_name,
-                    "prediction": prediction,
-                    "probability": probability,
-                    "risk_level": risk_level
-                })
+            result: PredictionResponse = {
+                "employee_number": employee.employee_number,
+                "model": model_name,
+                "prediction": prediction,
+                "probability": probability,
+                "risk_level": risk_level
+            }
 
-        return result
+            results.append(result)
+
+        return results
+
+    def predict_batch(self, tasks: list[PredictTask]) -> list[PredictionResponse]:
+        if not tasks: return []
+
+        tasks_by_model: dict[str, list[Employee]] = defaultdict(list)
+
+        for task in tasks:
+            employee: Employee = task["employee"]
+            models: list[str] = task["models"]
+
+            for model_name in models:
+                if model_name not in self.models:
+                    raise ValueError(f"Model tidak dikenal: {model_name}")
+
+                tasks_by_model[model_name].append(employee)
+
+        results: list[PredictionResponse] = []
+
+        for model_name, employees in tasks_by_model.items():
+            model_result: list[PredictionResponse] = self._predict_model(
+                model_name,
+                employees
+            )
+
+            results.extend(model_result)
+
+        return results

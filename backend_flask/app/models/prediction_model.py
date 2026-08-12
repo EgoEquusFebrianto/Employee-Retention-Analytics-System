@@ -1,15 +1,12 @@
 from datetime import datetime
-from tkinter.constants import CASCADE
 
 from sqlalchemy import Integer, ForeignKey, String, Float, DateTime, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app import db
 
-
-
 class EmployeePrediction(db.Model):
-    __tablename__ = "emoployee_predictions"
+    __tablename__ = "employee_predictions"
 
     id: Mapped[int] = mapped_column(
         Integer,
@@ -19,7 +16,7 @@ class EmployeePrediction(db.Model):
     employee_number: Mapped[int] = mapped_column(
         ForeignKey(
             "employee.employee_number",
-            ondelete=CASCADE
+            ondelete="CASCADE"
         ),
         nullable=False
     )
@@ -47,10 +44,10 @@ class EmployeePrediction(db.Model):
     prediction_at: Mapped[datetime] = mapped_column(
         DateTime,
         nullable=False,
-        default=datetime.now()
+        default=datetime.now
     )
 
-    employee = relationship(
+    employee: Mapped["Employee"] = relationship(
         "Employee",
         back_populates="predictions"
     )
@@ -60,5 +57,5 @@ class EmployeePrediction(db.Model):
             "employee_number",
             "model",
             name="uq_employee_prediction_model"
-        )
+        ),
     )

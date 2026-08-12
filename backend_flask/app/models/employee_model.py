@@ -2,8 +2,6 @@ from sqlalchemy import Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app import db
-from app.models.prediction_model import EmployeePrediction
-
 
 class Employee(db.Model):
     __tablename__ = "employee"
