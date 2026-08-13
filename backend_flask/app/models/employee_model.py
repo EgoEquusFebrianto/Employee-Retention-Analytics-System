@@ -1,7 +1,7 @@
 from sqlalchemy import Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from app import db
+from app.extention import db
 
 class Employee(db.Model):
     __tablename__ = "employee"

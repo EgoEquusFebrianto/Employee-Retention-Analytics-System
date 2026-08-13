@@ -2,11 +2,11 @@ from collections import defaultdict
 
 from sqlalchemy import select
 
-from app.dto.response.prediction_response import PredictionResponse, PredictTask
+from app._typed.response.prediction_response import PredictionResponse, PredictTask
 from app.models.employee_model import Employee
 from app.models.prediction_model import EmployeePrediction
 from app.services.prediction_service import PredictionService
-from app import db
+from app.extention import db
 
 class PredictionJob:
     REQUIRED_MODELS: set[str] = {

@@ -1,11 +1,9 @@
-import os
-
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 import os
 
-db = SQLAlchemy()
+from app.extention import db
+from app.routes.employee_route import employee_bp
 
 # APPLICATION FACTORY PATTERN
 def create_app():
@@ -17,5 +15,7 @@ def create_app():
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
     db.init_app(app)
+
+    app.register_blueprint(employee_bp)
 
     return app

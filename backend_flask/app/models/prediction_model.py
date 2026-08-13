@@ -3,7 +3,7 @@ from datetime import datetime
 from sqlalchemy import Integer, ForeignKey, String, Float, DateTime, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from app import db
+from app.extention import db
 
 class EmployeePrediction(db.Model):
     __tablename__ = "employee_predictions"

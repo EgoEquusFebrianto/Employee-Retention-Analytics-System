@@ -1,10 +1,9 @@
 from typing import TypedDict
 
 from app import create_app, db
-from app.dto.response.prediction_response import PredictTask
+from app._typed.response.prediction_response import PredictTask
 from app.models.employee_model import Employee
-from app.models.prediction_model import EmployeePrediction
-from app.services.prediction_job import PredictionJob
+from utils.prediction_job import PredictionJob
 from app.services.prediction_service import PredictionService
 
 

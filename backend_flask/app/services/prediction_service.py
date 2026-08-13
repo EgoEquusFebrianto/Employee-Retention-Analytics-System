@@ -6,7 +6,7 @@ import joblib
 from sklearn.pipeline import Pipeline
 from pathlib import Path
 
-from app.dto.response.prediction_response import PredictionResponse, PredictTask
+from app._typed.response.prediction_response import PredictionResponse, PredictTask
 from app.models.employee_model import Employee
 from app.models.prediction_model import EmployeePrediction
 
