@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 import os
 
 from app.extention import db
+from app.routes.dashboard_route import dashboard_bp
 from app.routes.employee_route import employee_bp
 
 # APPLICATION FACTORY PATTERN
@@ -17,5 +18,6 @@ def create_app():
     db.init_app(app)
 
     app.register_blueprint(employee_bp)
+    app.register_blueprint(dashboard_bp)
 
     return app

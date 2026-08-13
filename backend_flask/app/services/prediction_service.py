@@ -73,7 +73,7 @@ class PredictionService:
     def determine_risk_level(probability: float) -> str:
         if probability >= 0.70: return "HIGH"
         elif probability >= 0.40: return "MEDIUM"
-        return "Low"
+        return "LOW"
 
     def _predict_model(
             self,

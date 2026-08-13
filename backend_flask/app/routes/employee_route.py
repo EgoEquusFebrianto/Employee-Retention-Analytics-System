@@ -1,5 +1,4 @@
 from flask import Blueprint
-
 from app.controllers.employee_controller import EmployeeController
 from app.services.employee_service import EmployeeService
 

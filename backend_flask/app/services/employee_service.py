@@ -34,12 +34,12 @@ class EmployeeService:
             )
 
         total: int = db.session.scalar(count_statement) or 0
-        offset: int = (page - 1) * 20
+        offset: int = (page - 1) * 100
 
         statement = statement \
             .order_by(Employee.employee_number.asc()) \
             .offset(offset) \
-            .limit(20)
+            .limit(100)
 
         rows = db.session.execute(statement).all()
         data: list[dict[str, Any]] = []
@@ -62,10 +62,11 @@ class EmployeeService:
 
             data.append(data_employee.to_dict())
 
-        total_pages: int = (total + 20 - 1) if total > 0 else 0
+        total_pages: int = (total + 100 - 1) // 100 if total > 0 else 0
+
         pagination_info = PaginationInfo(
             page=page,
-            per_page=20,
+            per_page=100,
             total=total,
             total_pages=total_pages,
             has_next=(page < total_pages),
