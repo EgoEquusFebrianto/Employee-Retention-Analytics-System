@@ -6,7 +6,7 @@ class PredictTask(TypedDict):
     models: list[str]
 
 class PredictionResponse(TypedDict):
-    employee_number: str
+    employee_number: int
     model: str
     prediction: str
     probability: float

@@ -105,7 +105,7 @@ class PredictionJob:
 
         if not tasks: return 0
 
-        results: list[PredictionResponse] = self.service.predict_batch(tasks)
+        results: list[PredictionResponse] = self.service.predict_batch_for_seeder(tasks)
 
         inserted_count: int = self.save_predictions(results)
 

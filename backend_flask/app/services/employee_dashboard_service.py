@@ -9,16 +9,11 @@ from app.dto.response.risk_distribution_api import RiskDistribution, RiskDistrib
 from app.extention import db
 from app.models.employee_model import Employee
 from app.models.prediction_model import EmployeePrediction
+from app.services import VALID_MODELS
 
 class DashboardService:
-    VALID_MODELS: set[str] = {
-        "logistic_regression",
-        "random_forest",
-        "xgboost"
-    }
-
     def get_summary(self, model: str) -> dict[str, Any]:
-        if model not in self.VALID_MODELS:
+        if model not in VALID_MODELS:
             raise ValueError(f"Model not valid: {model}")
 
         statement = select(
@@ -61,7 +56,7 @@ class DashboardService:
         return summary_api
 
     def get_risk_distribution(self, model:str) -> dict[str, Any]:
-        if model not in self.VALID_MODELS:
+        if model not in VALID_MODELS:
             raise ValueError(f"Model not valid: {model}")
 
         statement = select(
@@ -88,7 +83,7 @@ class DashboardService:
         return RiskDistribution(model=model, data=data).to_dict()
 
     def get_department_analysis(self, model: str) -> dict[str, Any]:
-        if model not in self.VALID_MODELS:
+        if model not in VALID_MODELS:
             raise ValueError(f"Model Invalid: {model}")
 
         statement = select(
@@ -126,7 +121,7 @@ class DashboardService:
         return AttritionDepartment(data=data, model=model).to_dict()
 
     def get_job_role_risk(self, model: str):
-        if model not in self.VALID_MODELS:
+        if model not in VALID_MODELS:
             raise ValueError(f"Model Invalid: {model}")
 
         statement = select(

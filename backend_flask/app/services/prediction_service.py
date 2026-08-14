@@ -1,58 +1,24 @@
 from collections import defaultdict
-from typing import Any
 
 import pandas as pd
 import joblib
 from sklearn.pipeline import Pipeline
 from pathlib import Path
 
+from sqlalchemy import select
+
 from app._typed.response.prediction_response import PredictionResponse, PredictTask
 from app.models.employee_model import Employee
 from app.models.prediction_model import EmployeePrediction
+from app.services import *
+from app.extention import db
 
 class PredictionService:
-    FEATURES: list[str] = [
-        "age",
-        "daily_rate",
-        "hourly_rate",
-        "monthly_rate",
-        "business_travel",
-        "department",
-        "distance_from_home",
-        "education",
-        "education_field",
-        "environment_satisfaction",
-        "job_involvement",
-        "job_level",
-        "job_role",
-        "job_satisfaction",
-        "monthly_income",
-        "num_companies_worked",
-        "over_time",
-        "percent_salary_hike",
-        "performance_rating",
-        "relationship_satisfaction",
-        "stock_option_level",
-        "total_working_years",
-        "training_times_last_year",
-        "work_life_balance",
-        "years_at_company",
-        "years_in_current_role",
-        "years_since_last_promotion",
-        "years_with_curr_manager"
-    ]
-
-    MODEL_PATHS: dict[str, str] = {
-        "logistic_regression": "models/logistic_regression_pipeline.pkl",
-        "random_forest": "models/random_forest_pipeline.pkl",
-        "xgboost": "models/xgboost_pipeline.pkl"
-    }
-
     def __init__(self):
         self.models: dict[str, Pipeline] = {
             model_name: joblib.load(model_path)
             for model_name, model_path
-            in self.MODEL_PATHS.items()
+            in MODEL_PATHS.items()
         }
 
     @classmethod
@@ -64,7 +30,7 @@ class PredictionService:
         return pd.DataFrame([
             {
                 feature: getattr(employee, feature)
-                for feature in cls.FEATURES
+                for feature in FEATURES
             }
             for employee in employees
         ])
@@ -75,14 +41,15 @@ class PredictionService:
         elif probability >= 0.40: return "MEDIUM"
         return "LOW"
 
-    def _predict_model(
+    def _predict_batch(
             self,
             model_name: str,
-            employees: list[Employee]
-    ) -> list[EmployeePrediction]:
+            employees: list[Employee],
+    ) -> list[PredictionResponse]:
         if not employees: return []
 
         model: Pipeline = self.models[model_name]
+
         df = self.employee_to_dataframe(employees)
 
         predictions =  model.predict(df)
@@ -110,7 +77,7 @@ class PredictionService:
 
         return results
 
-    def predict_batch(self, tasks: list[PredictTask]) -> list[PredictionResponse]:
+    def predict_batch_for_seeder(self, tasks: list[PredictTask]) -> list[PredictionResponse]:
         if not tasks: return []
 
         tasks_by_model: dict[str, list[Employee]] = defaultdict(list)
@@ -128,7 +95,7 @@ class PredictionService:
         results: list[PredictionResponse] = []
 
         for model_name, employees in tasks_by_model.items():
-            model_result: list[PredictionResponse] = self._predict_model(
+            model_result: list[PredictionResponse] = self._predict_batch(
                 model_name,
                 employees
             )
@@ -136,3 +103,53 @@ class PredictionService:
             results.extend(model_result)
 
         return results
+
+    def predict_batch(self, employee_numbers: list[int], models: list[str]):
+        if not employee_numbers: return []
+
+        if not models:
+            raise ValueError("At least there is one model input.")
+
+        invalid_models: set[str] = set(models) - VALID_MODELS
+
+        if invalid_models:
+            raise ValueError("Invalid Model ", sorted(invalid_models))
+
+        employees: list[Employee] = self._get_employees(employee_numbers)
+
+        if not employees: return []
+
+        prediction_result: list[PredictionResponse] = []
+
+        for model_name in models:
+            predictions: list[PredictionResponse] = self._predict_batch(model_name, employees)
+
+            prediction_result.extend(predictions)
+
+        return prediction_result
+
+    def _get_employees(self, employee_numbers: list[int]) -> list[Employee]:
+        statement = select(Employee).where(
+            Employee.employee_number.in_(employee_numbers)
+        )
+
+        res = db.session.scalars(statement).all()
+
+        return res
+
+    def save_predictions(self, results: list[PredictionResponse]):
+        if not results: return 0
+
+        predictions: list[EmployeePrediction] = [
+            EmployeePrediction(
+                employee_number=result["employee_number"],
+                model=result["model"],
+                prediction=result["prediction"],
+                probability=result["probability"],
+                risk_level=result["risk_level"],
+            )
+            for result in results
+        ]
+
+        db.session.add_all(predictions)
+        db.session.commit()
