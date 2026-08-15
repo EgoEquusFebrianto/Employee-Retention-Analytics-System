@@ -63,6 +63,10 @@ def get_high_risk_employees():
 def import_employees():
     return employee_controller.import_employees()
 
+@employee_bp.get("/<int:employee_number>")
+def get_employee(employee_number: int):
+    return employee_controller.get_employee_detail(employee_number)
+
 @employee_bp.post("/test-upload")
 def test_upload_route():
     return test_upload()

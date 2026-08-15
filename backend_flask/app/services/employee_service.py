@@ -2,6 +2,7 @@ from typing import Any
 
 from sqlalchemy import select, func
 
+from app.dto.response.employee_detail import EmployeeDetailData, PredictionDetailData, EmployeeDetail
 from app.dto.response.employee_risk_page import EmployeeHighRiskData, EmployeeHighRiskPage, EmployeeHighRisk
 from app.extention import db
 from app.dto.response.employee_page import Data, PaginationInfo, EmployeePage
@@ -134,3 +135,74 @@ class EmployeeService:
         ).to_dict()
 
         return EmployeeHighRisk(model=model, data=data, pagination=pagination).to_dict()
+
+    def get_employee_detail(self, employee_number: int) -> dict[str, Any]:
+        employee: Employee | None = db.session.scalar(
+            select(Employee).where(
+                Employee.employee_number== employee_number
+            )
+        )
+
+        if employee is None: return None
+
+        predictions: list[EmployeePrediction] = (
+            db.session.scalars(
+                select(EmployeePrediction)
+                .where(
+                    EmployeePrediction.employee_number == employee_number
+                )
+                .order_by(
+                    EmployeePrediction.model
+                )
+            ).all()
+        )
+
+        employee_data = EmployeeDetailData(
+            employee_number=employee.employee_number,
+            age=employee.age,
+            business_travel=employee.business_travel,
+            daily_rate=employee.daily_rate,
+            department=employee.department,
+            distance_from_home=employee.distance_from_home,
+            education=employee.education,
+            education_field=employee.education_field,
+            employee_count=employee.employee_count,
+            environment_satisfaction=employee.environment_satisfaction,
+            gender=employee.gender,
+            hourly_rate=employee.hourly_rate,
+            job_involvement=employee.job_involvement,
+            job_level=employee.job_level,
+            job_role=employee.job_role,
+            job_satisfaction=employee.job_satisfaction,
+            marital_status=employee.marital_status,
+            monthly_income=employee.monthly_income,
+            monthly_rate=employee.monthly_rate,
+            num_companies_worked=employee.num_companies_worked,
+            over18=employee.over18,
+            over_time=employee.over_time,
+            percent_salary_hike=employee.percent_salary_hike,
+            performance_rating=employee.performance_rating,
+            relationship_satisfaction=employee.relationship_satisfaction,
+            standard_hours=employee.standard_hours,
+            stock_option_level=employee.stock_option_level,
+            total_working_years=employee.total_working_years,
+            training_times_last_year=employee.training_times_last_year,
+            work_life_balance=employee.work_life_balance,
+            years_at_company=employee.years_at_company,
+            years_in_current_role=employee.years_in_current_role,
+            years_since_last_promotion=employee.years_since_last_promotion,
+            years_with_curr_manager=employee.years_with_curr_manager,
+        ).to_dict()
+
+        predictions_data = [
+            PredictionDetailData(
+                model=prediction.model,
+                prediction=prediction.prediction,
+                probability=prediction.probability,
+                risk_level=prediction.risk_level,
+                prediction_at=prediction.prediction_at,
+            ).to_dict()
+            for prediction in predictions
+        ]
+
+        return EmployeeDetail(employee=employee_data, predictions=predictions_data).to_dict()

@@ -48,7 +48,7 @@ class DashboardController:
         return make_response(jsonify({
             "status": "SUCCESS",
             **result
-        }), 400)
+        }), 200)
 
     def get_department_analysis(self) -> Response:
         model: str | None = request.args.get("model")

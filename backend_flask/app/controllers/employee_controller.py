@@ -1,8 +1,8 @@
 from flask import jsonify, request, Response, make_response
 from werkzeug.datastructures import FileStorage
 
-from app.services.employee_service import EmployeeService
 from app.services.employee_import_service import EmployeeImportService
+from app.services.employee_service import EmployeeService
 
 class EmployeeController:
     def __init__(
@@ -98,3 +98,21 @@ class EmployeeController:
                 "status": "ERROR",
                 "message": "An error occurred when processing the file."
             }), 500)
+
+    def get_employee_detail(self, employee_number: int) -> Response:
+        result: dict[str, object] | None = self.employee_service.get_employee_detail(
+            employee_number=employee_number
+        )
+
+        if result is None:
+            return make_response(jsonify({
+                "status": "ERROR",
+                "message": (
+                    "Employee tidak ditemukan."
+                ),
+            }), 404)
+
+        return make_response(jsonify({
+            "status": "SUCCESS",
+            "data": result,
+        }), 200)
