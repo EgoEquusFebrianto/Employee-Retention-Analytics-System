@@ -1,3 +1,12 @@
+/** @import {
+ * DashboardContextType,
+ * DashboardSummaryResponse,
+ * RiskDistributionResponse,
+ * DepartmentRiskResponse,
+ * JobRoleRiskResponse,
+ * } from "./context-type/dashboard.type"
+ */
+
 import React, { createContext, useCallback, useEffect, useState } from 'react'
 import { DashboardService } from './services/dashboard-service';
 
@@ -5,10 +14,19 @@ export const DashboardContext = createContext(null);
 
 export const DashboardContextProvider = ({ children }) => {
     const [model, setModel] = useState("xgboost");
+
+    /** @type {[DashboardSummaryResponse|null, Function]} */
     const [summary, setSummary] = useState(null);
-    const [riskDistribution, setRiskDistribution] = useState([]);
-    const [departmentRisk, setDepartmentRisk] = useState([]);
-    const [jobRoleRisk, setJobRoleRisk] = useState([]);
+
+    /** @type {[RiskDistributionResponse|null, Function]} */
+    const [riskDistribution, setRiskDistribution] = useState(null);
+
+    /** @type {[DepartmentRiskResponse|null, Function]} */
+    const [departmentRisk, setDepartmentRisk] = useState(null);
+
+    /** @type {[JobRoleRiskResponse|null, Function]} */
+    const [jobRoleRisk, setJobRoleRisk] = useState(null);
+
 
     const [loading, setLoading] = useState(false);
 
@@ -25,7 +43,8 @@ export const DashboardContextProvider = ({ children }) => {
                     summaryResponse,
                     riskResponse,
                     departmentResponse,
-                    jobRoleResponse
+                    jobRoleResponse,
+                    highRiskEmployeeResponse
                 ] = await Promise.all([
                     DashboardService.getDashboardSummary(selectedModel),
                     DashboardService.getRiskDistribution(selectedModel),
@@ -36,8 +55,7 @@ export const DashboardContextProvider = ({ children }) => {
                 setSummary(summaryResponse.summary);
                 setRiskDistribution(riskResponse.data);
                 setDepartmentRisk(departmentResponse.data);
-                setJobRoleRisk(jobRoleResponse.data)
-
+                setJobRoleRisk(jobRoleResponse.data);
             } catch (err) {
                 console.error("Error Fetching dashboard:", err);
             } finally{
@@ -69,7 +87,7 @@ export const DashboardContextProvider = ({ children }) => {
         setModel,
         loading,
         fetchDashboard,
-        refreshDashboard
+        refreshDashboard,
     };
 
     return (

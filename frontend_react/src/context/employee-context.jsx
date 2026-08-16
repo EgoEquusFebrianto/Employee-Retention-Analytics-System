@@ -1,85 +1,64 @@
-import React, { createContext, useCallback, useState } from 'react'
+import React, { createContext, useCallback, useEffect, useState } from 'react'
 import { EmployeeService } from './services/employee-service';
 
 export const EmployeeContext = createContext(null);
 
 export const EmployeeContextProvider = ({ children }) => {
-    const [employees, setEmployees] = useState([]);
-    const [employeeDetail, setEmployeeDetail] = useState(null);
-
     const [model, setModel] = useState("xgboost");
-    
-    const [page, setPage] = useState(1);
-    const [perPage, setPerPage] = useState(10);
-    const [total, setTotal] = useState(0);
-    const [totalPages, setTotalPages] = useState(0);
-    const [hasNext, setHasNext] = useState(false);
-    const [hasPrevious, setHasPrevious] = useState(false);
-
+    const [view, setView] = useState("all");
+    const [employees, setEmployees] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [page, setPage] = useState(1);
+    const [pagination, setPagination] = useState(null);
 
-    /**
-     * @param {number} selectedPage
-     */
     const fetchEmployees = useCallback(
-        async (selectedPage = page) => {
+        async () => {
             setLoading(true);
-
+            
             try {
-                const payload = await EmployeeService.getEmployeePredictions(selectedPage, model);
-                
-                setEmployees(payload.data);
-                setPage(payload.pagination.page);
-                setPerPage(payload.pagination.per_page);
-                setTotal(payload.pagination.total)
-                setTotalPages(payload.pagination.total_pages);
-                setHasNext(payload.pagination.has_next);
-                setHasPrevious(payload.pagination.has_previous);
+                let response;
+
+                if (view === "all") {
+                    response = await EmployeeService.getEmployees(model, page);
+                } else if (view === "high-risk") {
+                    response = await EmployeeService.getHighRiskEmployees(model, page);
+                }
+
+                setEmployees(response?.data ?? []);
+                setPagination(response?.pagination ?? null);
             } catch (err) {
-                console.error("Error fetching employees data:", err);
+                console.error("Failed Fetching Employees Data:", err)
             } finally {
                 setLoading(false);
             }
-        },
-        [page, model]
-    );
+        }, [model, view, page]
+    )
 
-    /**
-     * 
-     * @param {number} employeeNumber 
-     */
-    const fetchEmployeeDetail = useCallback(
-        async (employeeNumber) => {
-            setLoading(true);
+    useEffect(() => {
+        fetchEmployees();
+    }, [fetchEmployees]);
 
-            try {
-                const payload = await EmployeeService.getEmployeePredictionDetail(employeeNumber);
-                
-                setEmployeeDetail(payload.data)
-            } catch (err) {
-                console.error("Error fetching employee detail: ", err);
-            } finally {
-                setLoading(false);
-            }
-        },
-        []
-    );
+    const handleSetModel = (newModel) => {
+        setModel(newModel);
+        setPage(1);
+    };
+
+    const handleSetView = (newView) => {
+        setView(newView);
+        setPage(1);
+    };
 
     const employeeValues = {
-        employees,
-        employeeDetail,
         model,
-        setModel,
+        setModel: handleSetModel,
+        view,
+        setView: handleSetView,
+        employees,
+        loading,
         page,
         setPage,
-        perPage,
-        total,
-        totalPages,
-        hasNext,
-        hasPrevious,
-        loading,
-        fetchEmployees,
-        fetchEmployeeDetail,
+        pagination,
+        fetchEmployees
     }
 
     return (

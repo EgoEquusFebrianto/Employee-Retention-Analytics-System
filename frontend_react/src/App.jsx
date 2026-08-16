@@ -1,34 +1,23 @@
 import { useEffect, useState } from 'react'
 
 import './App.css'
-import { useEmployee } from "./context/hook/employee-hook"
-
+import { AppLayout } from './component/app-layout/app-layout'
+import { Dashboard } from './pages/dashboard/dashboard'
+import { SummaryCard } from './component/dashboard-component/summary-card/summary-card'
+import { useDashboard } from './context/hook/dashboard-hook'
+import { Route, Routes } from 'react-router-dom'
+import { EmployeePage } from './pages/employee/employee-page'
 
 function App() {
-    const {
-        employees,
-        employeeDetail,
-        loading,
-        error,
-        fetchEmployees,
-        fetchEmployeeDetail
-    } = useEmployee();
-
-    const test = async () => {
-      await fetchEmployees(1);
-      await fetchEmployeeDetail(1);
-    };
-        
-    useEffect(() => {
-        test();
-    }, [fetchEmployees, fetchEmployeeDetail]);
-
-    console.log(employees)
-
+   
   return (
-    <div>
-      TEST
-    </div>
+    <Routes>
+      <Route element={<AppLayout />}
+      >
+        <Route path='/' element={<Dashboard />} />
+        <Route path='/employees' element={<EmployeePage />} />
+      </Route>
+    </Routes>
   )
 }
 

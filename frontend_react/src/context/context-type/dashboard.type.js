@@ -144,6 +144,7 @@
  */
 
 
+
 /**
  * @typedef {Object} DashboardContextType
  *
@@ -160,7 +161,6 @@
  *
  * @property {JobRoleRisk[]} jobRoleRisk
  * Risiko berdasarkan job role
- *
  *
  * Model
  *

@@ -1,0 +1,175 @@
+.risk-distribution-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 24px;
+}
+
+.dashboard-section-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.dashboard-section-header h2 {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 600;
+    color: #111827;
+}
+
+.dashboard-section-header p {
+    margin: 5px 0 0;
+    font-size: 13px;
+    color: #4d535e;
+}
+
+.risk-total {
+    font-size: 13px;
+    color: #6b7280;
+    white-space: nowrap;
+}
+
+.risk-distribution-content {
+    display: grid;
+    grid-template-columns: minmax(260px, 1fr) minmax(220px, 0.8fr);
+    gap: 24px;
+    align-items: center;
+}
+
+.risk-chart {
+    position: relative;
+    width: 100%;
+    height: 280px;
+}
+
+.risk-chart-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: none;
+}
+
+.risk-chart-center strong {
+    font-size: 28px;
+    color: #111827;
+}
+
+.risk-chart-center span {
+    margin-top: 2px;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.risk-legend {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.risk-legend-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+}
+
+.risk-legend-label {
+    font-size: 14px;
+    color: #374151;
+
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+.risk-legend-label-content {
+    transform: translateY(9%);
+}
+
+.risk-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.risk-indicator.risk-high {
+    background: #dc2626;
+}
+
+.risk-indicator.risk-medium {
+    background: #f59e0b;
+}
+
+.risk-indicator.risk-low {
+    background: #16a34a;
+}
+
+.risk-legend-value {
+    gap: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.risk-legend-value {
+    font-size: 14px;
+    color: #111827;
+}
+
+.risk-legend-value span {
+    min-width: 45px;
+    text-align: right;
+    font-size: 12px;
+    color: #6b7280;
+
+}
+
+@media (max-width: 700px) {
+    .risk-distribution-content {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .risk-chart {
+        height: 240px;
+    }
+
+    .risk-legend {
+        width: 100%;
+    }
+}
+
+
+@media (max-width: 480px) {
+    .risk-distribution-card {
+        padding: 16px;
+    }
+
+    .dashboard-section-header {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .risk-total {
+        white-space: normal;
+    }
+
+    .risk-chart {
+        height: 220px;
+    }
+
+    .risk-chart-center strong {
+        font-size: 24px;
+    }
+
+    .risk-legend-item {
+        width: 100%;
+    }
+}

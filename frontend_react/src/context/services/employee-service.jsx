@@ -1,34 +1,94 @@
-import React from 'react'
-import API from './api'
+/** 
+ * @import {
+ *   EmployeePredictionListResponse,
+ *   HighRiskEmployeeResponse,
+ *   EmployeePredictionDetailResponse
+ * } from "../context-type/employee.type"
+ */
 
-/** @import { EmployeePredictionResponse, EmployeePredictionDetailResponse } from "../context-type/employee.type" */
+import API from "./api";
+
 
 export const EmployeeService = {
 
     /**
-     * 
-     * @param {number} page 
-     * @param string} model 
-     * @returns {Promise<EmployeePredictionResponse>}
+     * Mengambil daftar employee beserta hasil prediksi.
+     *
+     * Endpoint:
+     * GET /employees/predictions
+     *
+     * @param {string|null} model
+     * @param {number} page
+     *
+     * @returns {Promise<EmployeePredictionListResponse>}
      */
-    getEmployeePredictions: async (page = 1, model = null) => {
-        const response = await API.get("/employees/predictions", {
-            params: {
-                page,
-                ...(model && { model })
+    getEmployees: async (
+        model = null,
+        page = 1,
+    ) => {
+
+        const response = await API.get(
+            "/employees/predictions",
+            {
+                params: {
+                    page,
+                    ...(model && { model }),
+                }
             }
-        })
+        );
+
         return response.data;
     },
+
 
     /**
-     * 
-     * @param {number} employee_number 
-     * @returns {Promise<EmployeePredictionDetailResponse>}
+     * Mengambil employee dengan tingkat risiko HIGH.
+     *
+     * Endpoint:
+     * GET /employees/high-risk
+     *
+     * @param {string} model
+     * @param {number} page
+     *
+     * @returns {Promise<HighRiskEmployeeResponse>}
      */
-    getEmployeePredictionDetail: async (employee_number) => {
-        const response = await API.get(`/employees/${employee_number}`)
+    getHighRiskEmployees: async (
+        model,
+        page = 1,
+    ) => {
+
+        const response = await API.get(
+            "/employees/high-risk",
+            {
+                params: {
+                    model,
+                    page,
+                }
+            }
+        );
 
         return response.data;
     },
+
+
+    /**
+     * Mengambil detail employee beserta hasil prediksi
+     * dari seluruh model machine learning.
+     *
+     * Endpoint:
+     * GET /employees/:employeeNumber
+     *
+     * @param {number} employeeNumber
+     *
+     * @returns {Promise<EmployeePredictionDetailResponse>}
+     */
+    getEmployeeDetail: async (employeeNumber) => {
+
+        const response = await API.get(
+            `/employees/${employeeNumber}`
+        );
+
+        return response.data;
+    },
+
 };

@@ -1,48 +1,147 @@
 /**
  * @typedef {Object} EmployeePrediction
+ * Hasil prediksi satu model untuk seorang employee.
  *
- * Data employee beserta hasil prediksi model.
+ * @property {string} model
+ * Nama model machine learning.
+ *
+ * @property {string} prediction
+ * Hasil prediksi, misalnya "Yes" atau "No".
+ *
+ * @property {string} prediction_at
+ * Waktu ketika prediksi dibuat.
+ *
+ * @property {number} probability
+ * Probabilitas prediksi.
+ *
+ * @property {string} risk_level
+ * Tingkat risiko: HIGH, MEDIUM, atau LOW.
+ */
+
+
+/**
+ * @typedef {Object} EmployeePredictionItem
+ * Data ringkas employee yang digunakan pada tabel employee.
+ *
+ * @property {number} employee_number
+ * Nomor identitas employee.
  *
  * @property {number} age
+ * Usia employee.
+ *
  * @property {string} department
- * @property {number} employee_number
+ * Department employee.
+ *
  * @property {string} job_role
+ * Posisi atau job role employee.
+ *
  * @property {string} model
+ * Model machine learning yang digunakan.
+ *
  * @property {string} prediction
+ * Hasil prediksi attrition.
+ *
  * @property {string} prediction_at
+ * Waktu ketika prediksi dibuat.
+ *
  * @property {number} probability
+ * Probabilitas prediksi attrition.
+ *
  * @property {string} risk_level
+ * Tingkat risiko employee.
  */
 
 
 /**
  * @typedef {Object} EmployeePredictionPagination
- *
- * Informasi paginasi employee prediction.
+ * Informasi pagination employee prediction.
  *
  * @property {boolean} has_next
+ * Menunjukkan apakah masih terdapat halaman berikutnya.
+ *
  * @property {boolean} has_previous
+ * Menunjukkan apakah terdapat halaman sebelumnya.
+ *
  * @property {number} page
+ * Nomor halaman saat ini.
+ *
  * @property {number} per_page
+ * Jumlah data pada setiap halaman.
+ *
  * @property {number} total
+ * Jumlah seluruh data.
+ *
  * @property {number} total_pages
+ * Jumlah seluruh halaman.
  */
 
 
 /**
- * @typedef {Object} EmployeePredictionResponse
+ * @typedef {Object} EmployeePredictionListResponse
+ * Response dari endpoint employee predictions.
  *
- * Response from:
  * GET /employees/predictions
+ * GET /employees/predictions?model=xgboost
  *
- * @property {EmployeePrediction[]} data
+ * @property {EmployeePredictionItem[]} data
+ * Daftar employee prediction.
+ *
  * @property {EmployeePredictionPagination} pagination
+ * Informasi pagination.
  */
 
+
+/**
+ * @typedef {Object} HighRiskEmployee
+ * Data ringkas employee dengan tingkat risiko HIGH.
+ *
+ * @property {number} employee_number
+ * Nomor identitas employee.
+ *
+ * @property {number} age
+ * Usia employee.
+ *
+ * @property {string} department
+ * Department employee.
+ *
+ * @property {string} job_role
+ * Posisi atau job role employee.
+ *
+ * @property {string} prediction
+ * Hasil prediksi attrition.
+ *
+ * @property {number} probability
+ * Probabilitas prediksi attrition.
+ *
+ * @property {string} risk_level
+ * Tingkat risiko employee.
+ */
+
+
+/**
+ * @typedef {Object} HighRiskEmployeeResponse
+ * Response dari endpoint high-risk employee.
+ *
+ * GET /employees/high-risk?model=xgboost
+ *
+ * @property {HighRiskEmployee[]} data
+ * Daftar employee dengan risiko tinggi.
+ *
+ * @property {string} model
+ * Model machine learning yang digunakan.
+ *
+ * @property {EmployeePredictionPagination} pagination
+ * Informasi pagination.
+ *
+ * @property {string} status
+ * Status response dari backend.
+ */
 
 
 /**
  * @typedef {Object} EmployeeData
+ * Informasi lengkap seorang employee.
+ *
  * @property {number} age
  * @property {string} business_travel
  * @property {number} daily_rate
@@ -79,68 +178,82 @@
  * @property {number} years_with_curr_manager
  */
 
-/**
- * @typedef {Object} PredictionData
- * @property {string} model
- * @property {string} prediction
- * @property {string} prediction_at
- * @property {number} probability
- * @property {string} risk_level
- */
 
 /**
  * @typedef {Object} EmployeePredictionDetailData
+ * Data detail employee beserta seluruh hasil prediksi model.
  *
  * @property {EmployeeData} employee
- * @property {PredictionData[]} predictions
+ * Informasi lengkap employee.
+ *
+ * @property {EmployeePrediction[]} predictions
+ * Hasil prediksi dari seluruh model.
  */
 
 
 /**
  * @typedef {Object} EmployeePredictionDetailResponse
+ * Response dari endpoint employee detail.
  *
-  
- * Response from:
- * GET /employees/{id}
- * 
+ * GET /employees/predictions/:employeeNumber
+ *
  * @property {EmployeePredictionDetailData} data
+ * Detail employee dan hasil prediksinya.
+ *
  * @property {string} status
+ * Status response dari backend.
  */
-
-
 
 
 /**
  * @typedef {Object} EmployeeContextType
  *
- * Data employee.
+ * State model
  *
- * @property {EmployeePrediction[]} employees
- * @property {EmployeeData|null} employeeDetail
+ * @property {string} model
+ * Model machine learning yang sedang dipilih.
  *
- * Filter.
+ * @property {(model:string)=>void} setModel
  *
- * @property {string|null} model
- * @property {(model:string|null)=>void} setModel
  *
- * Pagination.
+ * Employee list
  *
- * @property {number} page
- * @property {(page:number)=>void} setPage
- * @property {number} perPage
- * @property {number} total
- * @property {number} totalPages
- * @property {boolean} hasNext
- * @property {boolean} hasPrevious
- *
- * Loading state.
+ * @property {EmployeePredictionItem[]} employees
+ * Daftar employee yang ditampilkan.
  *
  * @property {boolean} loading
+ * Status loading employee data.
  *
- * Actions.
  *
- * @property {(page?:number)=>Promise<void>} fetchEmployees
- * @property {(employeeNumber:number)=>Promise<void>} fetchEmployeeDetail
+ * View
+ *
+ * @property {string} view
+ * Tampilan employee: "all" atau "high-risk".
+ *
+ * @property {(view:string)=>void} setView
+ *
+ *
+ * Pagination
+ *
+ * @property {number} page
+ * Halaman employee saat ini.
+ *
+ * @property {EmployeePredictionPagination|null} pagination
+ * Informasi pagination employee.
+ *
+ * @property {(page:number)=>void} setPage
+ *
+ *
+ * Employee loader
+ *
+ * @property {()=>Promise<void>} fetchEmployees
+ * Mengambil data employee berdasarkan view, model, dan halaman aktif.
  */
+
+
+/**
+ * @typedef {"all"|"high-risk"} EmployeeView
+ */
+
 
 export {};
