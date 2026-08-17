@@ -91,4 +91,12 @@ export const EmployeeService = {
         return response.data;
     },
 
+    importEmployees: async (file) => {
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const response = await API.post("/employees/import", formData);
+
+        return response.data;
+    },
 };

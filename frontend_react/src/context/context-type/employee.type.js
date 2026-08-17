@@ -195,7 +195,7 @@
  * @typedef {Object} EmployeePredictionDetailResponse
  * Response dari endpoint employee detail.
  *
- * GET /employees/predictions/:employeeNumber
+ * GET /employees/:employeeNumber
  *
  * @property {EmployeePredictionDetailData} data
  * Detail employee dan hasil prediksinya.
@@ -219,6 +219,9 @@
  * Employee list
  *
  * @property {EmployeePredictionItem[]} employees
+ * Daftar employee yang ditampilkan.
+ * 
+ * @property {EmployeePredictionDetailData} employeeDetail
  * Daftar employee yang ditampilkan.
  *
  * @property {boolean} loading
@@ -248,6 +251,8 @@
  *
  * @property {()=>Promise<void>} fetchEmployees
  * Mengambil data employee berdasarkan view, model, dan halaman aktif.
+ * 
+ * @property {(employeeNumber)=>Promise<void>} fetchEmployeeDetail
  */
 
 

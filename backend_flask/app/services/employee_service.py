@@ -12,6 +12,9 @@ from app.services import VALID_MODELS
 
 
 class EmployeeService:
+    def __init__(self):
+        self.__perpage = 50
+        
     def get_employee_predictions(
             self,
             page: int,
@@ -39,12 +42,12 @@ class EmployeeService:
             )
 
         total: int = db.session.scalar(count_statement) or 0
-        offset: int = (page - 1) * 100
+        offset: int = (page - 1) * self.__perpage
 
         statement = statement \
             .order_by(Employee.employee_number.asc()) \
             .offset(offset) \
-            .limit(100)
+            .limit(self.__perpage)
 
         rows = db.session.execute(statement).all()
         data: list[dict[str, Any]] = []
@@ -67,11 +70,11 @@ class EmployeeService:
 
             data.append(data_employee.to_dict())
 
-        total_pages: int = (total + 100 - 1) // 100 if total > 0 else 0
+        total_pages: int = (total + self.__perpage - 1) // self.__perpage if total > 0 else 0
 
         pagination_info = PaginationInfo(
             page=page,
-            per_page=100,
+            per_page=self.__perpage,
             total=total,
             total_pages=total_pages,
             has_next=(page < total_pages),
@@ -85,7 +88,7 @@ class EmployeeService:
         if model not in VALID_MODELS:
             raise ValueError(f"INVALID MODEL: {model}.")
 
-        offset: int = (page - 1) * 100
+        offset: int = (page - 1) * self.__perpage
 
         statement = select(
             Employee,
@@ -98,7 +101,7 @@ class EmployeeService:
             EmployeePrediction.risk_level == "HIGH",
         ).offset(
             offset
-        ).limit(100)
+        ).limit(self.__perpage)
 
         count_statement = select(
             func.count(EmployeePrediction.id)
@@ -110,7 +113,7 @@ class EmployeeService:
         total: int = db.session.scalar(count_statement) or 0
 
         rows = db.session.execute(statement).all()
-        total_pages: int = (total + 100 - 1) // 100 if total > 0 else 0
+        total_pages: int = (total + self.__perpage - 1) // self.__perpage if total > 0 else 0
 
         data: list[dict[str, Any]] = [
             EmployeeHighRiskData(
@@ -127,7 +130,7 @@ class EmployeeService:
 
         pagination: dict[str, Any] = EmployeeHighRiskPage(
             total=total,
-            per_page=100,
+            per_page=self.__perpage,
             total_pages=total_pages,
             page=page,
             has_next=(page < total_pages),

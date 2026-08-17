@@ -7,6 +7,7 @@ import { SummaryCard } from './component/dashboard-component/summary-card/summar
 import { useDashboard } from './context/hook/dashboard-hook'
 import { Route, Routes } from 'react-router-dom'
 import { EmployeePage } from './pages/employee/employee-page'
+import { EmployeePageDetail } from './pages/employee-detail/employee-detail'
 
 function App() {
    
@@ -16,6 +17,7 @@ function App() {
       >
         <Route path='/' element={<Dashboard />} />
         <Route path='/employees' element={<EmployeePage />} />
+        <Route path='/employees/:employeeNumber' element={<EmployeePageDetail />}/>
       </Route>
     </Routes>
   )

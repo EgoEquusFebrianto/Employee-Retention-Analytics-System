@@ -10,6 +10,10 @@ export const EmployeeContextProvider = ({ children }) => {
     const [loading, setLoading] = useState(false);
     const [page, setPage] = useState(1);
     const [pagination, setPagination] = useState(null);
+    const [employeeDetail, setEmployeeDetail] = useState({});
+
+    const [statusImport, setStatusImport] = useState({});
+    const [importLoading, setImportLoading] = useState(false);
 
     const fetchEmployees = useCallback(
         async () => {
@@ -48,17 +52,53 @@ export const EmployeeContextProvider = ({ children }) => {
         setPage(1);
     };
 
+    const fetchEmployeeDetail = useCallback(
+        async (employeeNumber) => {
+            try {
+                setLoading(true);
+                
+                const response = await EmployeeService.getEmployeeDetail(employeeNumber);
+
+                setEmployeeDetail(response.data);
+            } catch (err) {
+                console.error("Error fetching employee detail: ", err)
+            } finally {
+                setLoading(false);
+            }
+        }, []
+    );
+
+    const importEmployees = useCallback(
+        async (file) => {            
+            setImportLoading(true);
+            try {
+                const response = await EmployeeService.importEmployees(file);
+                setStatusImport(response);
+            } catch (err) {
+                console.error("Export Data Failed:", err)
+            } finally {
+                setImportLoading(false);
+            }
+        }, []
+    );
+
     const employeeValues = {
         model,
         setModel: handleSetModel,
         view,
         setView: handleSetView,
         employees,
+        employeeDetail,
         loading,
         page,
         setPage,
         pagination,
-        fetchEmployees
+        fetchEmployees,
+        fetchEmployeeDetail,
+
+        importLoading,
+        statusImport,
+        importEmployees,
     }
 
     return (

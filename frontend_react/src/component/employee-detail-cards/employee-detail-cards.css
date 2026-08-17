@@ -1,0 +1,122 @@
+.prediction-section {
+    margin-top: 24px;
+}
+
+.section-heading {
+    margin-bottom: 14px;
+}
+
+.section-heading h2 {
+    margin: 0;
+    color: #111827;
+    font-size: 18px;
+}
+
+.section-heading p {
+    margin: 5px 0 0;
+    color: #6b7280;
+    font-size: 13px;
+}
+
+.prediction-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minxmax(0, 1fr));
+    gap: 16px;
+}
+
+.prediction-card {
+    padding: 18px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+}
+
+.prediction-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.prediction-model {
+    color: #111827;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.prediction-result {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 20px;
+}
+
+.prediction-label {
+    color: #6b7280;
+    font-size: 12px;
+}
+
+.prediction-probability {
+    margin-bottom: 18px;
+}
+
+.probability-header {
+    display: flex;
+    justify-content: space-between;
+    color: #6b7280;
+    font-size: 12px;
+}
+
+.probability-header strong {
+    color: #111827;
+}
+
+.probability-track {
+    width: 100%;
+    height: 7px;
+    overflow: hidden;
+    background: #f3f4f6;
+    border-radius: 999px;
+}
+
+.probability-bar {
+    height: 100%;
+    border-radius: inherit;
+}
+
+.probability-high {
+    background: #dc2626;
+}
+
+.probability-medium {
+    background: #d97706;
+}
+
+
+.probability-low {
+    background: #16a34a;
+}
+
+.prediction-date {
+    padding-top: 12px;
+    border-top: 1px solid #f3f4f6;
+    color: #9ca3af;
+    font-size: 12px;
+}
+
+.prediction-empty {
+    padding: 24px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    color: #9ca3af;
+    text-align: center;
+}
+
+@media (min-width: 900px) {
+    .prediction-grid {
+        grid-template-columns: 1fr;
+    }
+}

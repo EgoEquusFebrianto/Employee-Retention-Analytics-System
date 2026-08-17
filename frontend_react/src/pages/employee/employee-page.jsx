@@ -3,6 +3,9 @@ import "./employee-page.css"
 import { useEmployee } from "../../context/hook/employee-hook"
 import { EmployeeToolbar } from '../../component/employee-component/employee-toolbar/employee-toolbar';
 import { EmployeeTable } from '../../component/employee-component/employee-table/employee-table';
+import { EmployeePagination } from '../../component/employee-pagination/employee-pagination';
+import { useNavigate } from 'react-router-dom';
+import { ImportEmployeeModal } from '../../component/employee-import/employee-import';
 
 export const EmployeePage = () => {
   const {
@@ -15,9 +18,24 @@ export const EmployeePage = () => {
     page,
     setPage,
     pagination,
+    importLoading,
+    statusImport,
+    importEmployees,
   } = useEmployee();
 
-  console.log(employees)
+  const navigate = useNavigate();
+  const [showImportModal, setShowImportModal] = useState(false);
+
+  const onImportHandle = async (file) => {
+    try {  
+      await importEmployees(file);
+      setShowImportModal(false);
+    } catch (err) {
+
+    }
+  };
+
+  console.log(statusImport)
 
   return (
     <div className='employee-page'>
@@ -26,6 +44,14 @@ export const EmployeePage = () => {
           <h1>Employees</h1>
           <p>Monitoring employee predictions and attrition risk.</p>
         </div>
+
+        <button
+          type='button'
+          onClick={() => setShowImportModal(true)}
+          className='employee-import-button'
+        >
+          Import Employees
+        </button>
       </div>
 
       <EmployeeToolbar
@@ -43,14 +69,28 @@ export const EmployeePage = () => {
         )}
 
         {!loading && (
-          <EmployeeTable
-            employees={employees}
-            onEmployeeClick={(employeeNumber) => {
-              console.log("Selected employee:", employeeNumber);
-            }}
-          />
+          <>
+            <EmployeeTable
+              employees={employees}
+              onEmployeeClick={(employeeNumber) => {
+                navigate(`/employees/${employeeNumber}`);
+              }}
+            />
+
+            <EmployeePagination 
+              page={page}
+              pagination={pagination}
+              onPageChange={setPage}
+            />
+          </>
         )}
       </div>
+
+      <ImportEmployeeModal 
+        open={showImportModal}
+        onClose={() => setShowImportModal(false)}
+        onImport={onImportHandle}
+      />
     </div>
   )
 }

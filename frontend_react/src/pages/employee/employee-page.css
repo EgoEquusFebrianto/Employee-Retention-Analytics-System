@@ -33,7 +33,7 @@
 
 @media (max-width: 768px) {
     .employee-page-header {
-        align-items: stretch;
+        align-items: flex-start;
         flex-direction: column;
         gap: 16px;
     }

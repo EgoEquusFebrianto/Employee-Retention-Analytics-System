@@ -1,0 +1,235 @@
+.import-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(17, 24, 39, .45);
+}
+
+.import-modal {
+    width: 100%;
+    max-width: 520px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, .15);
+    overflow: hidden;
+}
+
+.import-modal-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 20px 23px;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.import-modal-header h2 {
+    margin: 0;
+    color: #111827;
+    font-size: 18px;
+}
+
+.import-modal-header p {
+    margin: 6px 0 0;
+    color: #6b7280;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.import-modal-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: #6b7280;
+    cursor: pointer;
+}
+
+.import-modal-close:hover {
+    color: #111827;
+    background: #f9fafb;
+    border-radius: 6px;
+}
+
+.import-modal-body {
+    padding: 22px;
+}
+
+.import-dropzone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 190px;
+    padding: 24px;
+    border: 1.5px dashed #d1d5db;
+    border-radius: 10px;
+    background: #fafafa;
+    cursor: pointer;
+    text-align: center;
+}
+
+.import-dropzone:hover {
+    border-color: #9ca3af;
+    background: #f9fafb;
+}
+
+.import-upload-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 12px;
+    background: #f3f4f6;
+    border-radius: 50%;
+    color: #374151;
+}
+
+.import-dropzone strong {
+    color: #111827;
+    font-size: 14px;
+}
+
+.import-dropzone span {
+    margin-top: 4px;
+    color: #6b7280;
+    font-size: 13px;
+}
+
+.import-dropzone small {
+    margin-top: 12px;
+    color: #9ca3af;
+    font-size: 11px;
+}
+
+.import-selected-file {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 14px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background: #ffffff;
+}
+
+.import-file-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    border-radius: 6px;
+    background: #f3f4f6;
+    columns: #374151;
+}
+
+.import-file-info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+    flex: 1;
+}
+
+.import-file-info strong {
+    overflow: hidden;
+    color: #374151;
+    font-size: 13px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.import-file-info span {
+    color: #1e1e1f;
+    font-size: 11px;
+}
+
+.import-selected-file button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: #6e798b;
+    cursor: pointer;
+}
+
+.import-selected-file button:hover {
+    color: #dc2626;
+}
+
+.import-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 16px 22px;
+    border-top: 1px solid #f3f4f6;
+}
+
+.import-button {
+    padding: 9px 15px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.import-button-secondary {
+    border: 1px solid #d1d5dd;
+    background: #ffffff;
+    color: #374151;
+}
+
+.import-button-secondary:hover {
+    background: #f1f1f1;
+}
+
+.import-button-primary {
+    background: 1px solid #111827;
+    background: #111827;
+    color: #ffffff;
+}
+
+.import-button-primary:hover:not(:disabled) {
+    background: #1f2937;
+}
+
+.import-button-primary:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+@media (max-width: 600px) {
+    .import-modal-overlay {
+        align-items: flex-end;
+        padding: 0;
+    }
+
+    .import-modal {
+        max-width: none;
+        border-radius: 14px 14px 0 0;
+    }
+
+    .import-dropzone {
+        min-height: 160px;
+    }
+
+    .import-modal-footer {
+        padding-bottom: calc(
+            16px + env(safe-area-inset-bottom)
+        );
+    }
+}
