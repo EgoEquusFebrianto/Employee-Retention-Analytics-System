@@ -14,10 +14,10 @@ def create_app():
 
     app.config.from_object("config.Config")
 
-    if os.getenv("FLASK_ENV") == "production":
-        origins = ["https://your-domain.com"]
-    else:
-        origins = ["http://localhost:5173"]
+    cors_origins = os.getenv(
+        "CORS_ORIGINS",
+        "http://localhost"
+    ).split(",")
 
     db.init_app(app)
 
@@ -25,7 +25,7 @@ def create_app():
         app,
         resources={
             r"/api/*": {
-                "origins": origins,
+                "origins": cors_origins,
                 "methods": ["GET", "POST"], # ANOTHER: "PUT", "DELETE", "PATCH", "OPTIONS"
                 "allow_headers": ["Content-Type", "Authorization", "Accept"],
                 # "expose_headers": ["Content-Type", "Authorization"],

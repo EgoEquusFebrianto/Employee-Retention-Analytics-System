@@ -86,7 +86,7 @@
     border-color: #9ca3af;
 }
 
-@media (min-width: 768) {
+@media (max-width: 768px) {
     .employee-toolbar {
         align-items: stretch;
         flex-direction: column;

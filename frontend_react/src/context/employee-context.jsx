@@ -98,6 +98,7 @@ export const EmployeeContextProvider = ({ children }) => {
 
         importLoading,
         statusImport,
+        setStatusImport,
         importEmployees,
     }
 

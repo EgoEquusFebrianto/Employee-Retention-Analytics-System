@@ -6,6 +6,7 @@ import { EmployeeTable } from '../../component/employee-component/employee-table
 import { EmployeePagination } from '../../component/employee-pagination/employee-pagination';
 import { useNavigate } from 'react-router-dom';
 import { ImportEmployeeModal } from '../../component/employee-import/employee-import';
+import { useDashboard } from "../../context/hook/dashboard-hook"
 
 export const EmployeePage = () => {
   const {
@@ -20,8 +21,14 @@ export const EmployeePage = () => {
     pagination,
     importLoading,
     statusImport,
+    setStatusImport,
     importEmployees,
+    fetchEmployees,
   } = useEmployee();
+
+  const {
+    fetchDashboard
+  } = useDashboard(); 
 
   const navigate = useNavigate();
   const [showImportModal, setShowImportModal] = useState(false);
@@ -29,13 +36,13 @@ export const EmployeePage = () => {
   const onImportHandle = async (file) => {
     try {  
       await importEmployees(file);
-      setShowImportModal(false);
+      // setShowImportModal(false);
     } catch (err) {
 
     }
   };
 
-  console.log(statusImport)
+  // console.log(statusImport)
 
   return (
     <div className='employee-page'>
@@ -90,6 +97,13 @@ export const EmployeePage = () => {
         open={showImportModal}
         onClose={() => setShowImportModal(false)}
         onImport={onImportHandle}
+        loading={importLoading}
+        result={statusImport}
+        onDoneBegin={() => setStatusImport({})}
+        loadingData={() => {
+          fetchEmployees();
+          fetchDashboard();
+        }}
       />
     </div>
   )

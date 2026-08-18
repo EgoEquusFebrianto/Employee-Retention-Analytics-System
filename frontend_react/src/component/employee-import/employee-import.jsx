@@ -1,8 +1,10 @@
 import React, { useRef, useState }  from 'react'
 import "./employee-import.css"
 import { FiUpload, FiX, FiFile } from 'react-icons/fi';
+import { ImportResult } from './import-result';
+import { useEmployee } from '../../context/hook/employee-hook';
 
-export const ImportEmployeeModal = ({ open, onClose, onImport}) => {
+export const ImportEmployeeModal = ({ open, onClose, onImport, loading = false, result = null, onDoneBegin, loadingData}) => {
     /**
      * @type {React.RefObject<HTMLInputElement>}
      */
@@ -14,8 +16,6 @@ export const ImportEmployeeModal = ({ open, onClose, onImport}) => {
      * @type {[File, function]}
      */
     const [file, setFile] = useState(null);
-
-    if (!open) return null;
 
     /**
      * 
@@ -98,6 +98,31 @@ export const ImportEmployeeModal = ({ open, onClose, onImport}) => {
         }
 
         onClose();
+    }
+
+    if (!open) return null;
+
+    if (result?.status) {
+        return(
+            <div 
+                className='import-modal-overlay'
+                onClick={(e) => e.stopPropagation()}
+            >
+                <div
+                    className='import-modal'
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <ImportResult 
+                        result={result}
+                        onDone={() => {
+                            onDoneBegin();
+                            loadingData();
+                            handleClose();
+                        }}
+                    />
+                </div>
+            </div>
+        );
     }
 
     return (

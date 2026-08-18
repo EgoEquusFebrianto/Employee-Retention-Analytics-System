@@ -1,0 +1,77 @@
+name: employee-attrition-app
+
+services:
+  postgres:
+    image: postgres:17
+    container_name: employee-retention-db
+    restart: unless-stopped
+
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  db_init:
+    build:
+      context: ./backend_flask
+      dockerfile: Dockerfile
+    
+    image: employee-retention-backend:latest
+    
+    container_name: employee-retention-db-init
+
+    command: ["python", "init_database.py"]
+
+    env_file:
+      - ./backend_flask/.env
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  backend:
+    # build:
+    #   context: ./backend_flask
+    #   dockerfile: Dockerfile
+    
+    image: employee-retention-backend:latest
+    
+    container_name: employee-retention-backend
+    restart: unless-stopped
+
+    ports:
+      - "5000:5000"
+
+    depends_on:
+      db_init:
+        condition: service_completed_successfully
+  
+  frontend:
+    build:
+      context: ./frontend_react
+      dockerfile: Dockerfile
+    
+    image: employee-retention-frontend:latest
+
+    container_name: employee-retention-frontend
+    restart: unless-stopped
+
+    ports:
+      - "80:80"
+    
+    depends_on:
+      backend:
+        condition: service_started
+
+volumes:
+  postgres_data:

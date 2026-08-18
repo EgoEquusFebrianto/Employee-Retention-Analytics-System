@@ -19,7 +19,7 @@ export const Dashboard = () => {
         
     } = useDashboard();
 
-    // console.log()
+    // console.log(summary)
 
     return (
         <div className="dashboard">
@@ -66,6 +66,12 @@ export const Dashboard = () => {
             {loading && (
                 <div>
                     Loading dashboard...
+                </div>
+            )}
+
+            {!loading && summary === null && (
+                <div>
+                    No Data Content; there may be a server issue. Please check server.
                 </div>
             )}
 
